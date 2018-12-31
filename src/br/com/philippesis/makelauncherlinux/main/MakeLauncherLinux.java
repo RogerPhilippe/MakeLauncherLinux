@@ -33,7 +33,7 @@ public class MakeLauncherLinux extends JFrame {
     private JCheckBox checkBoxExecTerminal;
 
     // Variables
-    private String path, iconPath;
+    private String path, iconPath, locationLauncher;
 
     // Icons path
     private String PATH_ICONS_TITLE_BAR = "/app_icons/title-bar/";
@@ -245,6 +245,16 @@ public class MakeLauncherLinux extends JFrame {
             }
         });
         // Mouse click release event icon new
+        newIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Object[] options = new Object[] {"SIM", "NÃO"};
+                if(utils.yesNoConfirm(options, "Deseja criar novo lançador?", "Criar novo lançador",
+                        -1, 2, MakeLauncherLinux.this)) {
+                    limparCampos();
+                }
+            }
+        });
         // Mouse entered event icon new
         newIcon.addMouseListener(new MouseAdapter() {
             @Override
@@ -274,7 +284,7 @@ public class MakeLauncherLinux extends JFrame {
                     if(utils.yesNoConfirm(options, "Deseja criar o lançador com os dados informados?", "Criar Lançador",
                             -1, 2, MakeLauncherLinux.this)) {
                         // Caminho para salvar lançador
-                        String locationLauncher = null;
+                        locationLauncher = null;
                         fc = new JFileChooser();
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         if(fc.showOpenDialog(MakeLauncherLinux.this) == JFileChooser.APPROVE_OPTION) {
@@ -402,6 +412,20 @@ public class MakeLauncherLinux extends JFrame {
 
         }
         return value;
+    }
+
+    private void limparCampos() {
+        tfName.setText("");
+        tfComment.setText("");
+        tfVersion.setText("");
+        tfAppCommand.setText("");
+        cboxAppType.setSelectedIndex(0);
+        checkBoxExecTerminal.setSelected(false);
+        iconPath = null;
+        locationLauncher = null;
+        photoIcon.setIcon(null);
+        photoIcon.setText("Icone");
+
     }
 
     public static void main(String[] args) {
