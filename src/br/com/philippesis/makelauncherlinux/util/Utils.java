@@ -3,6 +3,7 @@ package br.com.philippesis.makelauncherlinux.util;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Utils {
@@ -34,5 +35,37 @@ public class Utils {
         else return false;
     }
 
+    public String[] getAppTypeList() {
+        String[] list = new String[]{"Application", "Null"};
+        return list;
+    }
+
+    public void addJPanelComp(JPanel component, Component addComp) {
+        component.add(addComp);
+    }
+
+    public boolean makeLauncher(String name, String version, String exec, boolean terminal, String appType, String iconPath,
+                                String comment, String categories, String locationLauncher) {
+        boolean retorno = false;
+        StringBuilder content = new StringBuilder()
+                .append("##Criado por: MakeLauncher for Linux beta! 2018")
+                .append("\n[Desktop Entry]")
+                .append("\nVersion="+version)
+                .append("\nName="+name)
+                .append("\nComment="+comment)
+                .append("\nTerminal="+terminal)
+                .append("\nType="+appType)
+                .append("\nIcon="+iconPath)
+                .append("\nExec="+exec);
+        try {
+            FileWriter fileWriter = new FileWriter(locationLauncher + name + ".desktop", true);
+            fileWriter.write(content.toString());
+            fileWriter.close();
+            retorno = true;
+        } catch (Exception er) {
+            er.printStackTrace();
+        }
+        return retorno;
+    }
 
 }
