@@ -51,7 +51,7 @@ public class Utils {
         boolean retorno = false;
         StringBuilder content = new StringBuilder()
                 .append("##Criado por: MakeLauncher for Linux beta! 2018")
-                .append("\n[DesktopFile Entry]")
+                .append("\n[Desktop Entry]")
                 .append("\nVersion=").append(desktop.getmVersion())
                 .append("\nName=").append(desktop.getmName())
                 .append("\nComment=").append(desktop.getmComment())

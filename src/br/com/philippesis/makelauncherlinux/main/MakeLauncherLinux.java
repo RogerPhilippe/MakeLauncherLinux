@@ -40,6 +40,7 @@ public class MakeLauncherLinux extends JFrame {
         String PATH_ICONS_TITLE_BAR = "/app_icons/title-bar/";
         String PATH_ICONS_MAIN_MENU = "/app_icons/main-menu/";
         String PATH_ICONS_CONTENT = "/app_icons/content/";
+        String PATH_ICONS_APP = "/app_icons/app/";
         //String PATH_ICONS_CONTEXT_MENU = "/app_icons/context-menu/";
 
         // Main Frame
@@ -49,6 +50,8 @@ public class MakeLauncherLinux extends JFrame {
         setResizable(false);
         setUndecorated(true);
         setLayout(null);
+        // App Icon
+        setIconImage(Toolkit.getDefaultToolkit().getImage(path + PATH_ICONS_APP + "icons8-rocket-48.png"));
         // Title Bar
         JPanel pnlTitleBar = new JPanel();
         pnlTitleBar.setBounds(0, 0, 430, 44);
@@ -312,11 +315,11 @@ public class MakeLauncherLinux extends JFrame {
                         }
                         // Criar lançador.
                         DesktopFile desktopFile = makeDesktopObject(tfName.getText().trim(), tfVersion.getText().trim(),
-                                tfAppCommand.getText(), checkBoxExecTerminal.isSelected(),
-                                Objects.requireNonNull(cbAppType.getSelectedItem()).toString(), iconPath, tfComment.getText());
-                        if (!utils.makeLauncher(desktopFile, locationLauncher + "/")) {
+                                tfComment.getText(), checkBoxExecTerminal.isSelected(),
+                                Objects.requireNonNull(cbAppType.getSelectedItem()).toString(), iconPath, tfAppCommand.getText());
+                        if (utils.makeLauncher(desktopFile, locationLauncher + "/")) {
                             JOptionPane.showMessageDialog(MakeLauncherLinux.this,
-                                    "Lançador criado com sucesso em:\n" + locationLauncher+"/" + tfName.getText());
+                                    "Lançador criado com sucesso em:\n" + locationLauncher+"/" + tfName.getText()+".desktop");
                         }
                     }
                 }
@@ -334,8 +337,8 @@ public class MakeLauncherLinux extends JFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 JOptionPane.showMessageDialog(MakeLauncherLinux.this, "MakeLauncher for Linux beta!\n" +
-                                "Developer: Roger Philippe - PhilippeSis\nhttp://philippesis.com.br",
-                        "About It - Ver.: 0.01", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+                                "Developer: Roger Philippe - PhilippeSis\nhttp://philippesis.com.br\nhttps://icons8.com/",
+                        "About It - Ver.: 0.0.1", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
                                 path+"/app_icons/app/icons8-rocket-36.png"));
             }
         });
@@ -439,11 +442,11 @@ public class MakeLauncherLinux extends JFrame {
         return value;
     }
 
-    private DesktopFile makeDesktopObject(String version, String appName, String comment, boolean terminal, String appType,
+    private DesktopFile makeDesktopObject(String appName, String version, String comment, boolean terminal, String appType,
                                       String iconPath, String exec) {
         return new DesktopFile.Builder()
-                .setVersion(version)
                 .setName(appName)
+                .setVersion(version)
                 .setComment(comment)
                 .setTerminal(terminal)
                 .setAppType(appType)
