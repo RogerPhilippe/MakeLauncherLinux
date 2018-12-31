@@ -1,8 +1,9 @@
 package br.com.philippesis.makelauncherlinux.main;
 
+import br.com.philippesis.makelauncherlinux.model.DesktopFile;
+import br.com.philippesis.makelauncherlinux.util.OpenDesktopFile;
 import br.com.philippesis.makelauncherlinux.util.Utils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -13,33 +14,13 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class MakeLauncherLinux extends JFrame {
 
-    // Panels
-    private JPanel pnlTitleBar, pnlMainMenu, pnlContent, pnlFooter;
-
-    // Icons title bar
-    private JLabel appIcon, minimizeIcon, closeIcon;
-    // Icons Main menu
-    private JLabel newIcon, openIcon, launchIcon, aboutIcon, exitIcon;
-    // Labels Edits Panel Content
-    private JLabel lbName, lbAppType, lbAppPathCommand, openContentIcon, pasteIcon, lbComment, lbVersion, photoIcon;
-    private JTextField tfName, tfAppCommand, tfComment, tfVersion;
-    private JComboBox cboxAppType;
-    private JCheckBox checkBoxExecTerminal;
-
     // Variables
     private String path, iconPath, locationLauncher;
-
-    // Icons path
-    private String PATH_ICONS_TITLE_BAR = "/app_icons/title-bar/";
-    private String PATH_ICONS_MAIN_MENU = "/app_icons/main-menu/";
-    private String PATH_ICONS_CONTEXT_MENU = "/app_icons/context-menu/";
-    private String PATH_ICONS_CONTENT = "/app_icons/content/";
 
     private Point mouseDownCompCoords = null;
 
@@ -47,14 +28,19 @@ public class MakeLauncherLinux extends JFrame {
 
     private Utils utils;
     
-    public MakeLauncherLinux() {
-
+    private MakeLauncherLinux() {
         utils = new Utils();
         path = utils.getAppAssetsPath();
         initComps();
     }
 
     private void initComps() {
+
+        // Paths images
+        String PATH_ICONS_TITLE_BAR = "/app_icons/title-bar/";
+        String PATH_ICONS_MAIN_MENU = "/app_icons/main-menu/";
+        String PATH_ICONS_CONTENT = "/app_icons/content/";
+        //String PATH_ICONS_CONTEXT_MENU = "/app_icons/context-menu/";
 
         // Main Frame
         setSize(430, 370);
@@ -64,21 +50,22 @@ public class MakeLauncherLinux extends JFrame {
         setUndecorated(true);
         setLayout(null);
         // Title Bar
-        pnlTitleBar = new JPanel();
+        JPanel pnlTitleBar = new JPanel();
         pnlTitleBar.setBounds(0, 0, 430, 44);
         pnlTitleBar.setLayout(null);
             // Icon APP title bar
-        appIcon = new JLabel();
+        JLabel appIcon = new JLabel();
+        // Icons path
         appIcon.setIcon(new ImageIcon(path + PATH_ICONS_TITLE_BAR + "icons8-rocket-24.png"));
         appIcon.setText("  Make Launcher for Linux beta!");
         appIcon.setVerticalTextPosition(SwingConstants.CENTER);
         appIcon.setBounds(10, 10, 260, 24);
             // Icon minimize title bar
-        minimizeIcon = new JLabel();
+        JLabel minimizeIcon = new JLabel();
         minimizeIcon.setIcon(new ImageIcon(path + PATH_ICONS_TITLE_BAR + "icons8-minimize-window-24.png"));
         minimizeIcon.setBounds(367, 10, 24, 24);
             // Icon close title bar
-        closeIcon = new JLabel();
+        JLabel closeIcon = new JLabel();
         closeIcon.setIcon(new ImageIcon(path + PATH_ICONS_TITLE_BAR + "icons8-close-window-24.png"));
         closeIcon.setBounds(396, 10, 24, 24);
             // Add comps on title bar
@@ -86,27 +73,27 @@ public class MakeLauncherLinux extends JFrame {
         pnlTitleBar.add(minimizeIcon);
         pnlTitleBar.add(closeIcon);
         // Main Menu
-        pnlMainMenu = new JPanel();
+        JPanel pnlMainMenu = new JPanel();
         pnlMainMenu.setBounds(0, 50, 430, 42);
         pnlMainMenu.setLayout(null);
             // Button New
-        newIcon = new JLabel();
+        JLabel newIcon = new JLabel();
         newIcon.setIcon(new ImageIcon(path + PATH_ICONS_MAIN_MENU + "icons8-plus-32.png"));
         newIcon.setBounds(10, 5, 32, 32);
             // Button Open
-        openIcon = new JLabel();
+        JLabel openIcon = new JLabel();
         openIcon.setIcon(new ImageIcon(path + PATH_ICONS_MAIN_MENU + "icons8-opened-folder-32.png"));
         openIcon.setBounds(52,5, 32, 32 );
             // Launch Icon
-        launchIcon = new JLabel();
+        JLabel launchIcon = new JLabel();
         launchIcon.setIcon(new ImageIcon(path + PATH_ICONS_MAIN_MENU + "icons8-launch-32.png"));
         launchIcon.setBounds(94, 5, 32, 32);
             // About icon
-        aboutIcon = new JLabel();
+        JLabel aboutIcon = new JLabel();
         aboutIcon.setIcon(new ImageIcon(path + PATH_ICONS_MAIN_MENU + "icons8-about-32.png"));
         aboutIcon.setBounds(136, 5, 32, 32);
             // Exit icon
-        exitIcon = new JLabel();
+        JLabel exitIcon = new JLabel();
         exitIcon.setIcon(new ImageIcon(path + PATH_ICONS_MAIN_MENU + "icons8-exit-sign-32.png"));
         exitIcon.setBounds(178, 5, 32, 32);
             // Add comps on main menu
@@ -116,55 +103,55 @@ public class MakeLauncherLinux extends JFrame {
         pnlMainMenu.add(aboutIcon);
         pnlMainMenu.add(exitIcon);
         // Content Panel
-        pnlContent = new JPanel();
+        JPanel pnlContent = new JPanel();
         pnlContent.setBounds(0, 92, 430, 260);
         pnlContent.setLayout(null);
             // Label Name
-        lbName = new JLabel("Nome");
+        JLabel lbName = new JLabel("Nome");
         lbName.setBounds(10, 10, 44, 18);
             // Edit Name
-        tfName = new JTextField();
+        JTextField tfName = new JTextField();
         tfName.setBounds(10, 30, 260, 22);
             // Label App Type
-        lbAppType = new JLabel("Tipo da Aplicação");
+        JLabel lbAppType = new JLabel("Tipo da Aplicação");
         lbAppType.setBounds(10, 54, 130, 22);
             // Combo Type
         String[] items = utils.getAppTypeList();
-        cboxAppType = new JComboBox();
-        for (String item:items) { cboxAppType.addItem(item); }
-        cboxAppType.setBounds(10, 78, 260, 22);
+        JComboBox cbAppType = new JComboBox();
+        for (String item:items) { cbAppType.addItem(item); }
+        cbAppType.setBounds(10, 78, 260, 22);
             // Label App path/command
-        lbAppPathCommand = new JLabel("Aplicação/Comando");
+        JLabel lbAppPathCommand = new JLabel("Aplicação/Comando");
         lbAppPathCommand.setBounds(10, 106, 140, 22);
             // Edit App path/command
-        tfAppCommand = new JTextField();
+        JTextField tfAppCommand = new JTextField();
         tfAppCommand.setBounds(10, 130, 368, 22);
             // Button Search
-        openContentIcon = new JLabel();
+        JLabel openContentIcon = new JLabel();
         openContentIcon.setIcon(new ImageIcon(path + PATH_ICONS_CONTENT + "icons8-more-16.png"));
         openContentIcon.setBounds(382, 133, 16, 16);
             // Button Paste
-        pasteIcon = new JLabel();
+        JLabel pasteIcon = new JLabel();
         pasteIcon.setIcon(new ImageIcon(path + PATH_ICONS_CONTENT + "icons8-paste-16.png"));
         pasteIcon.setBounds(404, 133, 16, 16);
             // Edit exec on terminal
-        checkBoxExecTerminal = new JCheckBox();
+        JCheckBox checkBoxExecTerminal = new JCheckBox();
         checkBoxExecTerminal.setText("Exec via Terminal");
         checkBoxExecTerminal.setBounds(190, 173, 160, 22);
             // Label version
-        lbVersion = new JLabel("Versão");
+        JLabel lbVersion = new JLabel("Versão");
         lbVersion.setBounds(10, 153, 60, 22);
             // Edit version
-        tfVersion = new JTextField();
+        JTextField tfVersion = new JTextField();
         tfVersion.setBounds(10, 175, 160, 22);
             // Label comment
-        lbComment = new JLabel("Comentário");
+        JLabel lbComment = new JLabel("Comentário");
         lbComment.setBounds(10, 200, 90, 22);
             // Edit comment
-        tfComment = new JTextField();
+        JTextField tfComment = new JTextField();
         tfComment.setBounds(10, 223, 410, 22);
             // Photo
-        photoIcon = new JLabel();
+        JLabel photoIcon = new JLabel();
         photoIcon.setText("Icone");
         photoIcon.setVerticalTextPosition(SwingConstants.CENTER);
         photoIcon.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -174,7 +161,7 @@ public class MakeLauncherLinux extends JFrame {
         pnlContent.add(lbName);
         pnlContent.add(tfName);
         pnlContent.add(lbAppType);
-        pnlContent.add(cboxAppType);
+        pnlContent.add(cbAppType);
         pnlContent.add(lbAppPathCommand);
         pnlContent.add(tfAppCommand);
         pnlContent.add(openContentIcon);
@@ -186,7 +173,7 @@ public class MakeLauncherLinux extends JFrame {
         pnlContent.add(tfComment);
         pnlContent.add(photoIcon);
         // Footer panel
-        pnlFooter = new JPanel();
+        JPanel pnlFooter = new JPanel();
         pnlFooter.setBounds(0, 352, 430, 18);
         pnlFooter.setLayout(null);
         // Add comps on application
@@ -250,8 +237,18 @@ public class MakeLauncherLinux extends JFrame {
             public void mouseReleased(MouseEvent e) {
                 Object[] options = new Object[] {"SIM", "NÃO"};
                 if(utils.yesNoConfirm(options, "Deseja criar novo lançador?", "Criar novo lançador",
-                        -1, 2, MakeLauncherLinux.this)) {
-                    limparCampos();
+                        -1, 2, MakeLauncherLinux.this, "/app_icons/app/icons8-siren-32.png")) {
+                    // Limpar campos
+                    utils.clearTextField(tfName);
+                    utils.clearTextField(tfAppCommand);
+                    utils.clearTextField(tfVersion);
+                    utils.clearTextField(tfComment);
+                    photoIcon.setIcon(null);
+                    photoIcon.setText("Icone");
+                    iconPath = null;
+                    locationLauncher = null;
+                    cbAppType.setSelectedIndex(0);
+                    checkBoxExecTerminal.setSelected(false);
                 }
             }
         });
@@ -263,6 +260,29 @@ public class MakeLauncherLinux extends JFrame {
             }
         });
         // Mouse click release event icon open
+        openIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                fc = new JFileChooser();
+                fc.addChoosableFileFilter(new FileNameExtensionFilter("Desktop", "desktop"));
+                if(fc.showOpenDialog(MakeLauncherLinux.this) == JFileChooser.APPROVE_OPTION) {
+                    OpenDesktopFile openDesktopFile = new OpenDesktopFile();
+                    try {
+                        DesktopFile desktopFile = openDesktopFile.lerProp(fc.getSelectedFile().getAbsolutePath());
+                        // Setar campos
+                        tfName.setText(desktopFile.getmName());
+                        tfAppCommand.setText(desktopFile.getmExec());
+                        tfComment.setText(desktopFile.getmComment());
+                        tfVersion.setText(desktopFile.getmVersion());
+                        cbAppType.setSelectedItem(desktopFile.getmAppType());
+                        checkBoxExecTerminal.setSelected(desktopFile.ismTerminal());
+                        photoIcon.setIcon(new ImageIcon(utils.getImage(desktopFile.getmIconPath(), photoIcon.getWidth(),
+                                photoIcon.getHeight())));
+                        photoIcon.setText("");
+                    } catch (Exception er) { er.printStackTrace(); }
+                }
+            }
+        });
         // Mouse entered event icon open
         openIcon.addMouseListener(new MouseAdapter() {
             @Override
@@ -282,7 +302,7 @@ public class MakeLauncherLinux extends JFrame {
                     // Criar lançador?
                     Object[] options = { "SIM", "NÃO" };
                     if(utils.yesNoConfirm(options, "Deseja criar o lançador com os dados informados?", "Criar Lançador",
-                            -1, 2, MakeLauncherLinux.this)) {
+                            -1, 2, MakeLauncherLinux.this, "/app_icons/app/icons8-siren-32.png")) {
                         // Caminho para salvar lançador
                         locationLauncher = null;
                         fc = new JFileChooser();
@@ -291,9 +311,10 @@ public class MakeLauncherLinux extends JFrame {
                             locationLauncher = fc.getSelectedFile().getAbsolutePath();
                         }
                         // Criar lançador.
-                        if (utils.makeLauncher(tfName.getText().trim(), tfVersion.getText().trim(), tfAppCommand.getText(),
-                                checkBoxExecTerminal.isSelected(), cboxAppType.getSelectedItem().toString(), iconPath,
-                                tfComment.getText(), null, locationLauncher+"/")) {
+                        DesktopFile desktopFile = makeDesktopObject(tfName.getText().trim(), tfVersion.getText().trim(),
+                                tfAppCommand.getText(), checkBoxExecTerminal.isSelected(),
+                                Objects.requireNonNull(cbAppType.getSelectedItem()).toString(), iconPath, tfComment.getText());
+                        if (!utils.makeLauncher(desktopFile, locationLauncher + "/")) {
                             JOptionPane.showMessageDialog(MakeLauncherLinux.this,
                                     "Lançador criado com sucesso em:\n" + locationLauncher+"/" + tfName.getText());
                         }
@@ -309,6 +330,15 @@ public class MakeLauncherLinux extends JFrame {
             }
         });
         // Mouse click release event icon about
+        aboutIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JOptionPane.showMessageDialog(MakeLauncherLinux.this, "MakeLauncher for Linux beta!\n" +
+                                "Developer: Roger Philippe - PhilippeSis\nhttp://philippesis.com.br",
+                        "About It - Ver.: 0.01", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+                                path+"/app_icons/app/icons8-rocket-36.png"));
+            }
+        });
         // Mouse entered event icon about
         aboutIcon.addMouseListener(new MouseAdapter() {
             @Override
@@ -369,12 +399,8 @@ public class MakeLauncherLinux extends JFrame {
                 fc = new JFileChooser();
                 fc.addChoosableFileFilter(new FileNameExtensionFilter("Imagem", "png"));
                 if(fc.showOpenDialog(MakeLauncherLinux.this) == JFileChooser.APPROVE_OPTION) {
-                    BufferedImage img = null;
                     iconPath = fc.getSelectedFile().getAbsolutePath();
-                    try {
-                        img = ImageIO.read(new File(iconPath));
-                    } catch (Exception er) { er.printStackTrace(); }
-                    Image dimg = img.getScaledInstance(photoIcon.getWidth(), photoIcon.getHeight(), Image.SCALE_SMOOTH);
+                    Image dimg = utils.getImage(iconPath, photoIcon.getWidth(), photoIcon.getHeight());
                     photoIcon.setIcon(new ImageIcon(dimg));
                     photoIcon.setText("");
                 }
@@ -390,10 +416,11 @@ public class MakeLauncherLinux extends JFrame {
 
     }
 
-    public void exitApp() {
+    private void exitApp() {
         Object[] options = { "SIM", "NÃO" };
         if(utils.yesNoConfirm(options, "Deseja Realmente Sair?", "Sair da aplicação",
-                -1, 2, MakeLauncherLinux.this)) dispose();
+                JOptionPane.DEFAULT_OPTION, JOptionPane.CANCEL_OPTION, MakeLauncherLinux.this,
+                "/app_icons/app/icons8-siren-32.png")) dispose();
     }
 
     // Metodo colar da area de transferencia do sistema operacional.
@@ -404,9 +431,7 @@ public class MakeLauncherLinux extends JFrame {
         if (content != null) {
             try {
                 value = content.getTransferData(DataFlavor.stringFlavor).toString();
-            } catch (UnsupportedFlavorException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (UnsupportedFlavorException | IOException e) {
                 e.printStackTrace();
             }
 
@@ -414,18 +439,17 @@ public class MakeLauncherLinux extends JFrame {
         return value;
     }
 
-    private void limparCampos() {
-        tfName.setText("");
-        tfComment.setText("");
-        tfVersion.setText("");
-        tfAppCommand.setText("");
-        cboxAppType.setSelectedIndex(0);
-        checkBoxExecTerminal.setSelected(false);
-        iconPath = null;
-        locationLauncher = null;
-        photoIcon.setIcon(null);
-        photoIcon.setText("Icone");
-
+    private DesktopFile makeDesktopObject(String version, String appName, String comment, boolean terminal, String appType,
+                                      String iconPath, String exec) {
+        return new DesktopFile.Builder()
+                .setVersion(version)
+                .setName(appName)
+                .setComment(comment)
+                .setTerminal(terminal)
+                .setAppType(appType)
+                .setIconPath(iconPath)
+                .setExec(exec)
+                .build();
     }
 
     public static void main(String[] args) {
