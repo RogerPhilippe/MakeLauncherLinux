@@ -264,18 +264,28 @@ public class MakeLauncherLinux extends JFrame {
         launchIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
+                // Verifica se campos indispenssáveis estão preenchidos
                 if (tfName.getText().isEmpty() && tfAppCommand.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(MakeLauncherLinux.this, "Pelo menos os campos Nome " +
                             "e Aplicação/Comando devem estar preenchidos.");
                 } else {
+                    // Criar lançador?
                     Object[] options = { "SIM", "NÃO" };
                     if(utils.yesNoConfirm(options, "Deseja criar o lançador com os dados informados?", "Criar Lançador",
                             -1, 2, MakeLauncherLinux.this)) {
+                        // Caminho para salvar lançador
+                        String locationLauncher = null;
+                        fc = new JFileChooser();
+                        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                        if(fc.showOpenDialog(MakeLauncherLinux.this) == JFileChooser.APPROVE_OPTION) {
+                            locationLauncher = fc.getSelectedFile().getAbsolutePath();
+                        }
+                        // Criar lançador.
                         if (utils.makeLauncher(tfName.getText().trim(), tfVersion.getText().trim(), tfAppCommand.getText(),
                                 checkBoxExecTerminal.isSelected(), cboxAppType.getSelectedItem().toString(), iconPath,
-                                tfComment.getText(), null, "/home/rogerphilippe/")) {
+                                tfComment.getText(), null, locationLauncher+"/")) {
                             JOptionPane.showMessageDialog(MakeLauncherLinux.this,
-                                    "Lançador criado com sucesso em:\n/home/rogerphilippe/" + tfName.getText());
+                                    "Lançador criado com sucesso em:\n" + locationLauncher+"/" + tfName.getText());
                         }
                     }
                 }
